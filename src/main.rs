@@ -33,15 +33,13 @@ async fn main() -> std::io::Result<()> {
         EmptySubscription,
     );
 
-    println!("Playground: http://localhost:8000");
-
     HttpServer::new(move || {
         App::new()
             .app_data(Data::new(schema.clone()))
             .service(web::resource("/query").guard(guard::Post()).to(index))
             .service(web::resource("/").guard(guard::Get()).to(index_playground))
     })
-    .bind("127.0.0.1:8000")?
+    .bind("127.0.0.1:1234")?
     .run()
     .await
 }
