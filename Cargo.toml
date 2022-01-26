@@ -3,6 +3,10 @@ name = "rust-server"
 version = "0.1.0"
 edition = "2021"
 
+[dependencies.tokio]
+version = "1.15.0"
+features = ["full"]
+
 [dependencies.async-std]
 version = "1.10.0"
 

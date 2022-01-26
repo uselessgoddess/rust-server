@@ -1,24 +1,17 @@
 use super::DB;
-use async_graphql::Object;
+use super::{Big, Small};
+use crate::DbCtx;
+use async_graphql::{Context, Object};
 use async_std::sync::{Arc, RwLock};
 use std::collections::hash_map::Entry;
 use std::collections::HashMap;
 
-use super::{Big, Small};
-
-pub struct Mutation {
-    db: DB,
-}
+pub struct Mutation;
 
 #[Object]
 impl Mutation {
-    #[graphql(skip)]
-    pub fn new(db: DB) -> Self {
-        Self { db }
-    }
-
-    async fn big(&self, id: String, mut data: Big) -> Option<Vec<String>> {
-        let mut db = self.db.write().await;
+    async fn big(&self, ctx: &Context<'_>, id: String, mut data: Big) -> Option<Vec<String>> {
+        let mut db = ctx.data_unchecked::<DbCtx>().write().await;
         let mut before = None;
         let entry = db.entry(id);
 
@@ -34,8 +27,8 @@ impl Mutation {
         before
     }
 
-    async fn small(&self, id: String, data: Small) -> Option<Vec<String>> {
-        let mut db = self.db.write().await;
+    async fn small(&self, ctx: &Context<'_>, id: String, data: Small) -> Option<Vec<String>> {
+        let mut db = ctx.data_unchecked::<DbCtx>().write().await;
         let mut before = None;
         let entry = db.entry(id);
 
